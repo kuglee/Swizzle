@@ -14,7 +14,7 @@ public enum SwizzleError: Error {
     case classNotFound(errorMessage: String)
 }
 
-private func _swizzleMethod(_ class_: AnyClass, from selector1: Selector, to selector2: Selector, isClassMethod: Bool) throws {
+private func _swizzleMethod(of class_: AnyClass, from selector1: Selector, to selector2: Selector, isClassMethod: Bool) throws {
     let c: AnyClass
 
     if isClassMethod {
@@ -41,41 +41,41 @@ private func _swizzleMethod(_ class_: AnyClass, from selector1: Selector, to sel
 }
 
 /// Method swizzling for unsafe raw-string class name.
-private func _swizzleMethodClassString(_ classString: String, from selector1: Selector, to selector2: Selector, isClassMethod: Bool) throws {
+private func _swizzleMethodClassString(of classString: String, from selector1: Selector, to selector2: Selector, isClassMethod: Bool) throws {
     guard let class_ = NSClassFromString(classString) else {
         throw SwizzleError.classNotFound(errorMessage: "Swizzled class \"\(classString)\" could not be found!")
     }
 
-    try _swizzleMethod(class_, from: selector1, to: selector2, isClassMethod: isClassMethod)
+    try _swizzleMethod(of: class_, from: selector1, to: selector2, isClassMethod: isClassMethod)
 }
 
 /// Instance-method swizzling.
-public func swizzleInstanceMethod(_ class_: AnyClass, from sel1: Selector, to sel2: Selector) throws {
-    try _swizzleMethod(class_, from: sel1, to: sel2, isClassMethod: false)
+public func swizzleInstanceMethod(of class_: AnyClass, from sel1: Selector, to sel2: Selector) throws {
+    try _swizzleMethod(of: class_, from: sel1, to: sel2, isClassMethod: false)
 }
 
 /// Instance-method swizzling for unsafe raw-string.
 /// - Note: This is useful for non-`#selector`able methods e.g. `dealloc`, private ObjC methods.
-public func swizzleInstanceMethodString(_ class_: AnyClass, from sel1: String, to sel2: String) throws {
-    try swizzleInstanceMethod(class_, from: Selector(sel1), to: Selector(sel2))
+public func swizzleInstanceMethodString(of class_: AnyClass, from sel1: String, to sel2: String) throws {
+    try swizzleInstanceMethod(of: class_, from: Selector(sel1), to: Selector(sel2))
 }
 
 /// JRSwizzle style instance-method swizzling.
-public func swizzleInstanceMethodObjcString(_ classString: String, from sel1: String, to sel2: Selector) throws {
-    try _swizzleMethodClassString(classString, from: Selector(sel1), to: sel2, isClassMethod: false)
+public func swizzleInstanceMethodObjcString(of classString: String, from sel1: String, to sel2: Selector) throws {
+    try _swizzleMethodClassString(of: classString, from: Selector(sel1), to: sel2, isClassMethod: false)
 }
 
 /// Class-method swizzling.
-public func swizzleClassMethod(_ class_: AnyClass, from sel1: Selector, to sel2: Selector) throws {
-    try _swizzleMethod(class_, from: sel1, to: sel2, isClassMethod: true)
+public func swizzleClassMethod(of class_: AnyClass, from sel1: Selector, to sel2: Selector) throws {
+    try _swizzleMethod(of: class_, from: sel1, to: sel2, isClassMethod: true)
 }
 
 /// Class-method swizzling for unsafe raw-string.
-public func swizzleClassMethodString(_ class_: AnyClass, from sel1: String, to sel2: String) throws {
-    try swizzleClassMethod(class_, from: Selector(sel1), to: Selector(sel2))
+public func swizzleClassMethodString(of class_: AnyClass, from sel1: String, to sel2: String) throws {
+    try swizzleClassMethod(of: class_, from: Selector(sel1), to: Selector(sel2))
 }
 
 /// JRSwizzle style class-method swizzling.
-public func swizzleClassMethodObjcString(_ classString: String, from sel1: String, to sel2: Selector) throws {
-    try _swizzleMethodClassString(classString, from: Selector(sel1), to: sel2, isClassMethod: true)
+public func swizzleClassMethodObjcString(of classString: String, from sel1: String, to sel2: Selector) throws {
+    try _swizzleMethodClassString(of: classString, from: Selector(sel1), to: sel2, isClassMethod: true)
 }

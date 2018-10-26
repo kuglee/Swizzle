@@ -14,7 +14,7 @@ class SwizzleTests: XCTestCase
     func testSwizzleInstanceMethod()
     {
         let swizzle: (Void) throws -> Void = {
-            try swizzleInstanceMethod(NSObject.self, from: #selector(NSObject.hello), to: #selector(NSObject.bye))
+            try swizzleInstanceMethod(of: NSObject.self, from: #selector(NSObject.hello), to: #selector(NSObject.bye))
         }
 
         let obj = NSObject()
@@ -39,7 +39,7 @@ class SwizzleTests: XCTestCase
     func testSwizzleClassMethod()
     {
         let swizzle: (Void) throws -> Void = {
-            try swizzleClassMethod(NSObject.self, from: #selector(NSObject.hello), to: #selector(NSObject.bye))
+            try swizzleClassMethod(of: NSObject.self, from: #selector(NSObject.hello), to: #selector(NSObject.bye))
         }
 
         // original
@@ -64,8 +64,8 @@ class SwizzleTests: XCTestCase
         // NOTE: MyObject-hello is not implemented (uses super-method)
 
         let swizzle: (Void) throws -> Void = {
-            try swizzleInstanceMethod(MyObject.self, from: #selector(MyObject.hello), to: #selector(MyObject.bonjour))
-            try swizzleClassMethod(MyObject.self, from: #selector(MyObject.hello), to: #selector(MyObject.bonjour))
+            try swizzleInstanceMethod(of: MyObject.self, from: #selector(MyObject.hello), to: #selector(MyObject.bonjour))
+            try swizzleClassMethod(of: MyObject.self, from: #selector(MyObject.hello), to: #selector(MyObject.bonjour))
         }
 
         let myObj = MyObject()
@@ -98,8 +98,8 @@ class SwizzleTests: XCTestCase
         // NOTE: MyObject-hello is not implemented (uses super-method)
 
         let swizzle: (Void) throws -> Void = {
-            try swizzleInstanceMethod(MyObject.self, from: #selector(MyObject.bonjour), to: #selector(MyObject.hello))  // reversed
-            try swizzleClassMethod(MyObject.self, from: #selector(MyObject.bonjour), to: #selector(MyObject.hello))  // reversed
+            try swizzleInstanceMethod(of: MyObject.self, from: #selector(MyObject.bonjour), to: #selector(MyObject.hello))  // reversed
+            try swizzleClassMethod(of: MyObject.self, from: #selector(MyObject.bonjour), to: #selector(MyObject.hello))  // reversed
         }
 
         let myObj = MyObject()
@@ -131,7 +131,7 @@ class SwizzleTests: XCTestCase
     {
         let swizzle: (Void) throws -> Void = {
 //            swizzleInstanceMethodString(MyObject.self, "dealloc", "_swift_dealloc")   // comment-out: doesn't work
-            try swizzleInstanceMethodString(MyObject.self, from: "dealloc", to: "_objc_dealloc")  // NOTE: swizzled_dealloc must be implemented as ObjC code
+            try swizzleInstanceMethodString(of: MyObject.self, from: "dealloc", to: "_objc_dealloc")  // NOTE: swizzled_dealloc must be implemented as ObjC code
         }
 
         XCTAssertNoThrow(try swizzle())
@@ -148,7 +148,7 @@ class SwizzleTests: XCTestCase
     func testNonExsistingSwizzlingMethod()
     {
         let swizzle: (Void) throws -> Void = {
-            try swizzleInstanceMethodString(MyObject.self, from: "NonExsistingSwizzlingMethod", to: "_objc_dealloc")
+            try swizzleInstanceMethodString(of: MyObject.self, from: "NonExsistingSwizzlingMethod", to: "_objc_dealloc")
         }
 
         XCTAssertThrowsError(try swizzle())
@@ -157,7 +157,7 @@ class SwizzleTests: XCTestCase
     func testNonExsistingSwizzledMethod()
     {
         let swizzle: (Void) throws -> Void = {
-            try swizzleInstanceMethodString(MyObject.self, from: "dealloc", to: "nonExsistingSwizzledMethod")
+            try swizzleInstanceMethodString(of: MyObject.self, from: "dealloc", to: "nonExsistingSwizzledMethod")
         }
 
         XCTAssertThrowsError(try swizzle())
@@ -166,7 +166,7 @@ class SwizzleTests: XCTestCase
     func testNonExsistingClass()
     {
         let swizzle: (Void) throws -> Void = {
-            try swizzleInstanceMethodObjcString("nonExistingClass", from: NSStringFromSelector(#selector(NSObject.hello)), to: #selector(NSObject.bye))
+            try swizzleInstanceMethodObjcString(of: "nonExistingClass", from: NSStringFromSelector(#selector(NSObject.hello)), to: #selector(NSObject.bye))
         }
 
         XCTAssertThrowsError(try swizzle())
