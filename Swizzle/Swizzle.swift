@@ -18,7 +18,10 @@ private func _swizzleMethod(of class_: AnyClass, from selector1: Selector, to se
     let c: AnyClass
 
     if isClassMethod {
-        c = object_getClass(class_)
+        guard let c_ = object_getClass(class_) else {
+            return
+        }
+        c = c_
     }
     else {
         c = class_
